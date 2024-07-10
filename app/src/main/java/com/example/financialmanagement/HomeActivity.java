@@ -53,14 +53,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public void displaySelectedListener(int itemId) {
         Fragment fragment = null;
-        switch (itemId) {
-            case R.id.navmenu_dashboard:
-                break;
-            case R.id.navmenu_income:
-                break;
-            case R.id.navmenu_expense:
-                break;
-        }
+//        switch (itemId) {
+//            case R.id.navmenu_dashboard:
+//                break;
+//            case R.id.navmenu_income:
+//                break;
+//            case R.id.navmenu_expense:
+//                break;
+//        }
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.main,fragment);
