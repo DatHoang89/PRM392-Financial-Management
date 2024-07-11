@@ -1,17 +1,26 @@
 package com.example.financialmanagement;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +47,11 @@ public class DashBoardFragment extends Fragment {
 
     //Animation
     private Animation FadeOpen, FadeClose;
+
+    //FireBase
+    private FirebaseAuth mAuth;
+    private DatabaseReference mIncomeDatabase;
+    private DatabaseReference mExpenseDatabase;
 
     public DashBoardFragment() {
         // Required empty public constructor
@@ -77,6 +91,13 @@ public class DashBoardFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View myview = inflater.inflate(R.layout.fragment_dash_board, container, false);
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        String uid = mUser.getUid();
+
+        mIncomeDatabase = FirebaseDatabase.getInstance().getReference().child("IncomeData").child(uid);
+        mIncomeDatabase = FirebaseDatabase.getInstance().getReference().child("ExpenseData").child(uid);
 
         //Connect floating button to layout
         fab_main_btn = myview.findViewById(R.id.fb_main_plus_btn);
@@ -131,15 +152,66 @@ public class DashBoardFragment extends Fragment {
         fab_income_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                incomeDataInsert();
             }
         });
 
         fab_expense_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+
             }
         });
+
+
+    }
+
+    public void incomeDataInsert(){
+        AlertDialog.Builder mydiaglog = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View myview = inflater.inflate(R.layout.custom_layour_for_insertdata, null);
+        mydiaglog.setView(myview);
+
+        AlertDialog dialog = mydiaglog.create();
+
+        EditText edtAmount = myview.findViewById(R.id.amount_edt);
+        EditText edtType = myview.findViewById(R.id.type_edt);
+        EditText edtNote = myview.findViewById(R.id.note_edt);
+
+        Button btnSave = myview.findViewById(R.id.btnSave);
+        Button btnCancel = myview.findViewById(R.id.btnCancel);
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String type = edtType.getText().toString().trim();
+                String amount = edtAmount.getText().toString().trim();
+                String note = edtNote.getText().toString().trim();
+
+                if(TextUtils.isEmpty(type)){
+                    edtType.setError("Required");
+                    return;
+                }
+                if(TextUtils.isEmpty(amount)){
+                    edtAmount.setError("Required");
+                    return;
+                }
+                int ouramountint = Integer.parseInt(amount);
+                if(TextUtils.isEmpty(note)){
+                    edtNote.setError("Required");
+                    return;
+                }
+
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
     }
 }
