@@ -59,7 +59,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/forget_password"
+                android:id="@+id/signin_here"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:text="Already have an account? Sign In Here"

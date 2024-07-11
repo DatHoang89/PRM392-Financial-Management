@@ -40,16 +40,18 @@
                 android:background="@drawable/edittext_background"
                 android:padding="15dp"
                 android:id="@+id/email_login"/>
+
             <EditText
+                android:id="@+id/password_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:hint="Password:"
-                android:textColor="@android:color/white"
-                android:textColorHint="@android:color/white"
                 android:background="@drawable/edittext_background"
+                android:hint="Password:"
+                android:inputType="textPassword"
                 android:padding="15dp"
-                android:id="@+id/password_login"/>
+                android:textColor="@android:color/white"
+                android:textColorHint="@android:color/white" />
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
