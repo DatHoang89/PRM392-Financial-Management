@@ -32,8 +32,8 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        mDialog = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
+        mDialog = new ProgressDialog(this);
         registration();
     }
 
@@ -63,7 +63,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             mDialog.dismiss();
                             Toast.makeText(getApplicationContext(), "Registration complete", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(),HomeActivity.class));
+                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                         } else {
                             mDialog.dismiss();
                             Toast.makeText(getApplicationContext(), "Registration failed", Toast.LENGTH_SHORT).show();
