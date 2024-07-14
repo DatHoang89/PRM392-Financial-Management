@@ -155,6 +155,46 @@ public class DashBoardFragment extends Fragment {
                 }
             }
         });
+<<<<<<< Updated upstream
+=======
+        //Calculate total income
+        mIncomeDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int totalsum = 0;
+                for (DataSnapshot mysnap:snapshot.getChildren()){
+                    Data data = myview.getValue(Data.class);
+                    totalsum += totalsum + data.getAmount();
+                    String strResult = String.valueOf(totalsum+".00");
+                    totalIncomeResult.setText(strResult);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        //Calculate total expense
+        mExpenseDatabase.addValueEventListener((new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int totalsum = 0;
+                for(DataSnapshot mysnap:snapshot.getChildren()){
+                    Data data = mysnap.getValue(Data.class);
+                    totalsum += data.getAmount();
+                    String strTotalSum = String.valueOf(totalsum);
+                    totalExpenseResult.setText(strTotalSum+".00");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        }));
+>>>>>>> Stashed changes
 
         return myview;
     }
