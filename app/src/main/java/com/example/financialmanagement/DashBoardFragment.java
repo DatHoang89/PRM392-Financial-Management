@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -55,6 +58,10 @@ public class DashBoardFragment extends Fragment {
     //Dashboard income and expense result
     private TextView totalIncomeResult;
     private TextView totalExpenseResult;
+
+    //Recycle View
+    private RecyclerView mRecycleIncome;
+    private RecyclerView mRecycleExpense;
 
     //FireBase
     private FirebaseAuth mAuth;
@@ -120,6 +127,10 @@ public class DashBoardFragment extends Fragment {
         totalIncomeResult = myview.findViewById(R.id.income_set_result);
         totalExpenseResult = myview.findViewById(R.id.expense_set_result);
 
+        //Recycler
+        mRecycleIncome = myview.findViewById(R.id.recycle_income);
+        mRecycleExpense = myview.findViewById(R.id.recycle_expense);
+
 
         //Connect Animation
         FadeOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_open);
@@ -164,7 +175,7 @@ public class DashBoardFragment extends Fragment {
                     Data data = mysnap.getValue(Data.class);
                     totalsum += totalsum + data.getAmount();
                     String strResult = String.valueOf(totalsum);
-                    totalIncomeResult.setText(strResult);
+                    totalIncomeResult.setText(strResult+".00");
                 }
             }
 
@@ -183,7 +194,7 @@ public class DashBoardFragment extends Fragment {
                     Data data = mysnap.getValue(Data.class);
                     totalsum += data.getAmount();
                     String strTotalSum = String.valueOf(totalsum);
-                    totalExpenseResult.setText(strTotalSum);
+                    totalExpenseResult.setText(strTotalSum+".00");
                 }
             }
 
@@ -192,6 +203,19 @@ public class DashBoardFragment extends Fragment {
 
             }
         }));
+
+        //Recycler
+        LinearLayoutManager layoutManagerIncome = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        layoutManagerIncome.setStackFromEnd(true);
+        layoutManagerIncome.setReverseLayout(true);
+        mRecycleIncome.setHasFixedSize(true);
+        mRecycleIncome.setLayoutManager(layoutManagerIncome);
+
+        LinearLayoutManager layoutManagerExpense = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        layoutManagerExpense.setStackFromEnd(true);
+        layoutManagerExpense.setReverseLayout(true);
+        mRecycleExpense.setHasFixedSize(true);
+        mRecycleExpense.setLayoutManager(layoutManagerExpense);
 
         return myview;
     }
