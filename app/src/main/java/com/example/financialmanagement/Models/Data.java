@@ -4,20 +4,30 @@ public class Data {
 
     private int amount;
     private String type;
-    private String category;
+    //    private String category;
     private String id;
+    private String note;
+    private String date;
 
     public Data() {
     }
 
-    public Data(int amount, String type, String category, String id, String date) {
+//    public Data(int amount, String type, String category, String id, String date) {
+//        this.amount = amount;
+//        this.type = type;
+//        this.category = category;
+//        this.id = id;
+//        this.date = date;
+//    }
+
+
+    public Data(int amount, String type, String id, String note, String date) {
         this.amount = amount;
         this.type = type;
-        this.category = category;
         this.id = id;
+        this.note = note;
         this.date = date;
     }
-
 
     public int getAmount() {
         return amount;
@@ -52,9 +62,15 @@ public class Data {
         this.date = date;
     }
 
-    private String date;
+    public String getNote() {
+        return note;
+    }
 
-    public void setCategory(String category){this.category = category;}
-
-    public String getCategory() { return category; }
+    public void setNote(String note) {
+        this.note = note;
+    }
+//    public void setCategory(String category){this.category = category;}
+//
+//    public String getCategory() { return category; }
+//}
 }

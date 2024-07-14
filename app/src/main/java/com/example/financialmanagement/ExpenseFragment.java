@@ -23,125 +23,101 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ExpenseFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ExpenseFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private FirebaseAuth mAuth;
     private DatabaseReference mExpenseDatabase;
-
-    //Recyclerview..
-
     private RecyclerView recyclerView;
+    private FirebaseRecyclerAdapter<Data, ExpenseFragment.MyViewHolder> adapter;
+    private TextView expenseTotalSum;
 
+    private String type;
+    private String category;
+    private double amount;
 
-    private TextView expenseSumResult;
-    public ExpenseFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ExpenseFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ExpenseFragment newInstance(String param1, String param2) {
-        ExpenseFragment fragment = new ExpenseFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private String post_key;
+    private String databaseUrl = "https://expense-manager-6ccad-default-rtdb.asia-southeast1.firebasedatabase.app";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View myView= inflater.inflate(R.layout.fragment_expense, container, false);
-        mAuth=FirebaseAuth.getInstance();
-        FirebaseUser mUser=mAuth.getCurrentUser();
-        String uid=mUser.getUid();
-        mExpenseDatabase= FirebaseDatabase.getInstance().getReference().child("ExpenseData").child(uid);
-        expenseSumResult=myView.findViewById(R.id.txtExpense);
-        recyclerView=myView.findViewById(R.id.recycler_id_expense);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View myView = inflater.inflate(R.layout.fragment_expense, container, false);
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        String uid = mUser.getUid();
+        mExpenseDatabase = FirebaseDatabase.getInstance(databaseUrl).getReference().child("ExpenseData").child(uid);
+        recyclerView = myView.findViewById(R.id.rvExpense);
+        expenseTotalSum = myView.findViewById(R.id.txtExpense);
 
-        LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
-        layoutManager.setStackFromEnd(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
         mExpenseDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int expenseSum=0;
-                for (DataSnapshot mySnapshot:dataSnapshot.getChildren()){
-                    Data data=mySnapshot.getValue(Data.class);
-                    expenseSum+=data.getAmount();
-                    String strExpenseSum=String.valueOf(expenseSum);
-                    expenseSumResult.setText(strExpenseSum);
+                int totalValue = 0;
+                for (DataSnapshot mysnapshot : dataSnapshot.getChildren()) {
+                    Data data = mysnapshot.getValue(Data.class);
+                    totalValue += data.getAmount();
                 }
+                String stTotalValue = String.valueOf(totalValue);
+                expenseTotalSum.setText(stTotalValue);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
 
-        return  myView;
+        FirebaseRecyclerOptions<Data> options = new FirebaseRecyclerOptions.Builder<Data>()
+                .setQuery(mExpenseDatabase, Data.class)
+                .build();
+
+        adapter = new FirebaseRecyclerAdapter<Data, ExpenseFragment.MyViewHolder>(options) {
+            @NonNull
+            @Override
+            public ExpenseFragment.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.expense_recycler_data, parent, false);
+                return new ExpenseFragment.MyViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull ExpenseFragment.MyViewHolder holder, int position, @NonNull Data model) {
+                holder.setAmmount(model.getAmount());
+                holder.setType(model.getType());
+                holder.setNote(model.getNote());
+                holder.setDate(model.getDate());
+            }
+        };
+
+        recyclerView.setAdapter(adapter);
+        return myView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseRecyclerOptions<Data> options = new FirebaseRecyclerOptions.Builder<Data>()
-                .setQuery(mExpenseDatabase, Data.class)
-                .build();
-        FirebaseRecyclerAdapter<Data, MyViewHolder> adapter = new FirebaseRecyclerAdapter<Data, ExpenseFragment.MyViewHolder>(options) {
-            @NonNull
-            @Override
-            public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.expense_recycler_data, parent, false);
-                return new MyViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull ExpenseFragment.MyViewHolder viewHolder, int position, @NonNull Data model) {
-                viewHolder.setDate(model.getDate());
-                viewHolder.setType(model.getType());
-                viewHolder.setAmmount(model.getAmount());
-            }
-        };
-        recyclerView.setAdapter(adapter);
+        if (adapter != null) {
+            adapter.startListening();
+        }
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
         View myView;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -154,18 +130,20 @@ public class ExpenseFragment extends Fragment {
             mType.setText(type);
         }
 
-
+        private void setNote(String category) {
+            TextView mNote = myView.findViewById(R.id.txtNoteExpense);
+            mNote.setText(category);
+        }
 
         private void setDate(String date) {
             TextView mDate = myView.findViewById(R.id.txtDateExpense);
             mDate.setText(date);
         }
 
-        private void setAmmount(int ammount) {
-            TextView mAmmount = myView.findViewById(R.id.txtAmmountExpense);
-            String stAmmount = String.valueOf(ammount);
-            mAmmount.setText(stAmmount);
+        private void setAmmount(int amount) {
+            TextView mAmount = myView.findViewById(R.id.txtAmmountExpense);
+            String stAmount = String.valueOf(amount);
+            mAmount.setText(stAmount);
         }
     }
-
 }

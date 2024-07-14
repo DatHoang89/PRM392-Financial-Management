@@ -23,58 +23,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link IncomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class IncomeFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-
     private FirebaseAuth mAuth;
     private DatabaseReference mIncomeDatabase;
     private RecyclerView recyclerView;
-
+    private FirebaseRecyclerAdapter<Data, MyViewHolder> adapter;
     private TextView incomeTotalSum;
 
-    public IncomeFragment() {
-        // Required empty public constructor
-    }
+    private String type;
+    private String category;
+    private double amount;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment IncomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static IncomeFragment newInstance(String param1, String param2) {
-        IncomeFragment fragment = new IncomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private String post_key;
+    private String databaseUrl = "https://expense-manager-6ccad-default-rtdb.asia-southeast1.firebasedatabase.app";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -84,10 +49,9 @@ public class IncomeFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
         String uid = mUser.getUid();
-        mIncomeDatabase = FirebaseDatabase.getInstance().getReference().child("IncomeData").child(uid);
+        mIncomeDatabase = FirebaseDatabase.getInstance(databaseUrl).getReference().child("IncomeData").child(uid);
         recyclerView = myView.findViewById(R.id.rvIncome);
         incomeTotalSum = myView.findViewById(R.id.txtIncome);
-
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setReverseLayout(true);
@@ -99,28 +63,24 @@ public class IncomeFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int totalValue = 0;
-                for (DataSnapshot mysanapshot : dataSnapshot.getChildren()) {
-                    Data data = mysanapshot.getValue(Data.class);
+                for (DataSnapshot mysnapshot : dataSnapshot.getChildren()) {
+                    Data data = mysnapshot.getValue(Data.class);
                     totalValue += data.getAmount();
-                    String stTotalValue = String.valueOf(totalValue);
-                    incomeTotalSum.setText(stTotalValue);
                 }
+                String stTotalValue = String.valueOf(totalValue);
+                incomeTotalSum.setText(stTotalValue);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        return myView;
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
         FirebaseRecyclerOptions<Data> options = new FirebaseRecyclerOptions.Builder<Data>()
                 .setQuery(mIncomeDatabase, Data.class)
                 .build();
-        FirebaseRecyclerAdapter<Data, MyViewHolder> adapter = new FirebaseRecyclerAdapter<Data, MyViewHolder>(options) {
+
+        adapter = new FirebaseRecyclerAdapter<Data, MyViewHolder>(options) {
             @NonNull
             @Override
             public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -129,17 +89,35 @@ public class IncomeFragment extends Fragment {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull MyViewHolder viewHolder, int position, @NonNull Data model) {
-                viewHolder.setDate(model.getDate());
-                viewHolder.setType(model.getType());
-                viewHolder.setCategory(String.valueOf(model.getCategory()));
-                viewHolder.setAmmount(model.getAmount());
+            protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull Data model) {
+                holder.setAmmount(model.getAmount());
+                holder.setType(model.getType());
+                holder.setNote(model.getNote());
+                holder.setDate(model.getDate());
             }
         };
+
         recyclerView.setAdapter(adapter);
+        return myView;
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
         View myView;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -152,22 +130,20 @@ public class IncomeFragment extends Fragment {
             mType.setText(type);
         }
 
-        private void setCategory(String category){
-            TextView mNote=myView.findViewById(R.id.txtCatExpense);
+        private void setNote(String category) {
+            TextView mNote = myView.findViewById(R.id.txtNoteIncome);
             mNote.setText(category);
         }
 
         private void setDate(String date) {
-            TextView mDate = myView.findViewById(R.id.txtDateExpense);
+            TextView mDate = myView.findViewById(R.id.txtDateIncome);
             mDate.setText(date);
         }
 
-        private void setAmmount(int ammount) {
-            TextView mAmmount = myView.findViewById(R.id.txtAmmountIncome);
-            String stAmmount = String.valueOf(ammount);
-            mAmmount.setText(stAmmount);
+        private void setAmmount(int amount) {
+            TextView mAmount = myView.findViewById(R.id.txtAmmountIncome);
+            String stAmount = String.valueOf(amount);
+            mAmount.setText(stAmount);
         }
-
     }
-
 }
