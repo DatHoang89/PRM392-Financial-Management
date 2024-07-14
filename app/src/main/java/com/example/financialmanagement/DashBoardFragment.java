@@ -161,7 +161,7 @@ public class DashBoardFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int totalsum = 0;
                 for (DataSnapshot mysnap:snapshot.getChildren()){
-                    Data data = myview.getValue(Data.class);
+                    Data data = mysnap.getValue(Data.class);
                     totalsum += totalsum + data.getAmount();
                     String strResult = String.valueOf(totalsum);
                     totalIncomeResult.setText(strResult);
@@ -191,7 +191,7 @@ public class DashBoardFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        }))
+        }));
 
         return myview;
     }
