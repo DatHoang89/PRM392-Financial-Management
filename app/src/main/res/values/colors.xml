@@ -2,4 +2,17 @@
 <resources>
     <color name="black">#E1CD65</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="toolbar">#31AEF2</color>
+    <color name="nav_header">#FF541F</color>
+
+    <color name="dashboard_color">#FF9B6309</color>
+    <color name="income_color">#FF240740</color>
+    <color name="expense_color">#FF6C042E</color>
+    <color name="date_color">#FF270648</color>
+    <color name="expense_ammount">#FFEC1D06</color>
 </resources>
