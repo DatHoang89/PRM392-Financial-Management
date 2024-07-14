@@ -1,12 +1,27 @@
 package com.example.financialmanagement;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.financialmanagement.Models.Data;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +38,13 @@ public class IncomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference mIncomeDatabase;
+    private RecyclerView recyclerView;
+
+    private TextView incomeTotalSum;
 
     public IncomeFragment() {
         // Required empty public constructor
@@ -56,9 +78,96 @@ public class IncomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_income, container, false);
+        View myView = inflater.inflate(R.layout.fragment_income, container, false);
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        String uid = mUser.getUid();
+        mIncomeDatabase = FirebaseDatabase.getInstance().getReference().child("IncomeData").child(uid);
+        recyclerView = myView.findViewById(R.id.rvIncome);
+        incomeTotalSum = myView.findViewById(R.id.txtIncome);
+
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
+
+        mIncomeDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int totalValue = 0;
+                for (DataSnapshot mysanapshot : dataSnapshot.getChildren()) {
+                    Data data = mysanapshot.getValue(Data.class);
+                    totalValue += data.getAmount();
+                    String stTotalValue = String.valueOf(totalValue);
+                    incomeTotalSum.setText(stTotalValue);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        return myView;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseRecyclerOptions<Data> options = new FirebaseRecyclerOptions.Builder<Data>()
+                .setQuery(mIncomeDatabase, Data.class)
+                .build();
+        FirebaseRecyclerAdapter<Data, MyViewHolder> adapter = new FirebaseRecyclerAdapter<Data, MyViewHolder>(options) {
+            @NonNull
+            @Override
+            public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.income_recycler_data, parent, false);
+                return new MyViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull MyViewHolder viewHolder, int position, @NonNull Data model) {
+                viewHolder.setDate(model.getDate());
+                viewHolder.setType(model.getType());
+                viewHolder.setCategory(String.valueOf(model.getCategory()));
+                viewHolder.setAmmount(model.getAmount());
+            }
+        };
+        recyclerView.setAdapter(adapter);
+    }
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        View myView;
+
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            myView = itemView;
+        }
+
+        private void setType(String type) {
+            TextView mType = myView.findViewById(R.id.txtTypeIncome);
+            mType.setText(type);
+        }
+
+        private void setCategory(String category){
+            TextView mNote=myView.findViewById(R.id.txtCatExpense);
+            mNote.setText(category);
+        }
+
+        private void setDate(String date) {
+            TextView mDate = myView.findViewById(R.id.txtDateExpense);
+            mDate.setText(date);
+        }
+
+        private void setAmmount(int ammount) {
+            TextView mAmmount = myView.findViewById(R.id.txtAmmountIncome);
+            String stAmmount = String.valueOf(ammount);
+            mAmmount.setText(stAmmount);
+        }
+
+    }
+
 }
