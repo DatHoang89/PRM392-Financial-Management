@@ -2,10 +2,6 @@ package com.example.financialmanagement;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,10 +14,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -95,7 +93,6 @@ public class DashBoardFragment extends Fragment {
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -162,8 +159,8 @@ public class DashBoardFragment extends Fragment {
         return myview;
     }
 
-    private void ftAnimation(){
-        if (isOpen){
+    private void ftAnimation() {
+        if (isOpen) {
 
             fab_income_btn.startAnimation(FadeClose);
             fab_expense_btn.startAnimation(FadeClose);
@@ -174,9 +171,9 @@ public class DashBoardFragment extends Fragment {
             fab_expense_txt.startAnimation(FadeClose);
             fab_income_txt.setClickable(false);
             fab_expense_txt.setClickable(false);
-            isOpen=false;
+            isOpen = false;
 
-        }else {
+        } else {
             fab_income_btn.startAnimation(FadeOpen);
             fab_expense_btn.startAnimation(FadeOpen);
             fab_income_btn.setClickable(true);
@@ -186,12 +183,12 @@ public class DashBoardFragment extends Fragment {
             fab_expense_txt.startAnimation(FadeOpen);
             fab_income_txt.setClickable(true);
             fab_expense_txt.setClickable(true);
-            isOpen=true;
+            isOpen = true;
 
         }
     }
 
-    private void addData(){
+    private void addData() {
         //Fab button income
 
         fab_income_btn.setOnClickListener(new View.OnClickListener() {
@@ -211,7 +208,7 @@ public class DashBoardFragment extends Fragment {
 
     }
 
-    public void incomeDataInsert(){
+    public void incomeDataInsert() {
         Log.d("Firebase", "incomeDataInsert called");
         AlertDialog.Builder mydiaglog = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -236,16 +233,16 @@ public class DashBoardFragment extends Fragment {
                 String amount = edtAmount.getText().toString().trim();
                 String note = edtNote.getText().toString().trim();
 
-                if(TextUtils.isEmpty(type)){
+                if (TextUtils.isEmpty(type)) {
                     edtType.setError("Required");
                     return;
                 }
-                if(TextUtils.isEmpty(amount)){
+                if (TextUtils.isEmpty(amount)) {
                     edtAmount.setError("Required");
                     return;
                 }
                 int ouramountint = Integer.parseInt(amount);
-                if(TextUtils.isEmpty(note)){
+                if (TextUtils.isEmpty(note)) {
                     edtNote.setError("Required");
                     return;
                 }
@@ -289,52 +286,52 @@ public class DashBoardFragment extends Fragment {
 
     }
 
-    public void expenseDataInsert(){
-        AlertDialog.Builder mydialog=new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater=LayoutInflater.from(getActivity());
-        View myview=inflater.inflate(R.layout.custom_layour_for_insertdata,null);
+    public void expenseDataInsert() {
+        AlertDialog.Builder mydialog = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View myview = inflater.inflate(R.layout.custom_layour_for_insertdata, null);
         mydialog.setView(myview);
 
         final AlertDialog dialog = mydialog.create();
 
         dialog.setCancelable(false);
 
-        EditText ammount=myview.findViewById(R.id.amount_edt);
-        EditText type=myview.findViewById(R.id.type_edt);
-        EditText note=myview.findViewById(R.id.note_edt);
+        EditText ammount = myview.findViewById(R.id.amount_edt);
+        EditText type = myview.findViewById(R.id.type_edt);
+        EditText note = myview.findViewById(R.id.note_edt);
 
-        Button btnSave=myview.findViewById(R.id.btnSave);
-        Button btnCansel=myview.findViewById(R.id.btnCancel);
+        Button btnSave = myview.findViewById(R.id.btnSave);
+        Button btnCansel = myview.findViewById(R.id.btnCancel);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String tmAmmount=ammount.getText().toString().trim();
-                String tmtype=type.getText().toString().trim();
-                String tmnote=note.getText().toString().trim();
+                String tmAmmount = ammount.getText().toString().trim();
+                String tmtype = type.getText().toString().trim();
+                String tmnote = note.getText().toString().trim();
 
-                if (TextUtils.isEmpty(tmAmmount)){
+                if (TextUtils.isEmpty(tmAmmount)) {
                     ammount.setError("Requires Fields...");
                     return;
                 }
 
-                int inamount=Integer.parseInt(tmAmmount);
+                int inamount = Integer.parseInt(tmAmmount);
 
-                if (TextUtils.isEmpty(tmtype)){
+                if (TextUtils.isEmpty(tmtype)) {
                     type.setError("Requires Fields...");
                     return;
                 }
-                if (TextUtils.isEmpty(tmnote)){
+                if (TextUtils.isEmpty(tmnote)) {
                     note.setError("Requires Fields...");
                     return;
                 }
                 ftAnimation();
-                String id=mExpenseDatabase.push().getKey();
-                String mDate=DateFormat.getDateInstance().format(new Date());
+                String id = mExpenseDatabase.push().getKey();
+                String mDate = DateFormat.getDateInstance().format(new Date());
 
-                Data data=new Data(inamount,tmtype,tmnote,id,mDate);
+                Data data = new Data(inamount, tmtype, tmnote, id, mDate);
                 mExpenseDatabase.child(id).setValue(data);
-                Toast.makeText(getActivity(),"Data added",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Data added", Toast.LENGTH_SHORT).show();
 
                 dialog.dismiss();
             }
