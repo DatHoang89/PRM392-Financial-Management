@@ -31,6 +31,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
                 android:text="6 June 2018"
+                android:layout_margin="5dp"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="@color/date_color"
                 android:textSize="15sp"

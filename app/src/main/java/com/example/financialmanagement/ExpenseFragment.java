@@ -87,7 +87,7 @@ public class ExpenseFragment extends Fragment {
                     totalValue += data.getAmount();
                 }
                 String stTotalValue = String.valueOf(totalValue);
-                expenseTotalSum.setText(stTotalValue);
+                expenseTotalSum.setText(stTotalValue+".00");
             }
 
             @Override
