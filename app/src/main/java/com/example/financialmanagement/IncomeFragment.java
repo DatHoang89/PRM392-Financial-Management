@@ -106,7 +106,7 @@ public class IncomeFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull Data model) {
-                holder.setAmmount(model.getAmount());
+                holder.setAmount(model.getAmount());
                 holder.setType(model.getType());
                 holder.setNote(model.getNote());
                 holder.setDate(model.getDate());
@@ -169,7 +169,7 @@ public class IncomeFragment extends Fragment {
             mDate.setText(date);
         }
 
-        private void setAmmount(int amount) {
+        private void setAmount(int amount) {
             TextView mAmount = myView.findViewById(R.id.txtAmmountIncome);
             String stAmount = String.valueOf(amount);
             mAmount.setText(stAmount);
