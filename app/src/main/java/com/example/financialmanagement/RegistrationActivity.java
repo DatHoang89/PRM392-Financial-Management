@@ -23,6 +23,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private EditText mEmail;
     private EditText mPass;
+    private EditText mConfirmPass;
     private Button btnReg;
     private TextView mSignin;
     private FirebaseAuth mAuth;
@@ -40,6 +41,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private void registration() {
         mEmail = findViewById(R.id.email_reg);
         mPass = findViewById(R.id.password_reg);
+        mConfirmPass = findViewById(R.id.confirm_password_reg);
         btnReg = findViewById(R.id.btn_reg);
         mSignin = findViewById(R.id.signin_reg);
 
@@ -48,12 +50,21 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = mEmail.getText().toString().trim();
                 String pass = mPass.getText().toString().trim();
+                String confirmPass = mConfirmPass.getText().toString().trim();
                 if (TextUtils.isEmpty(email)) {
                     mEmail.setError("Email Required...");
                     return;
                 }
                 if (TextUtils.isEmpty(pass)) {
                     mPass.setError("Password Required...");
+                }
+                if (TextUtils.isEmpty(confirmPass)) {
+                    mConfirmPass.setError("Confirm Password Required...");
+                    return;
+                }
+                if (!pass.equals(confirmPass)) {
+                    mConfirmPass.setError("Passwords do not match...");
+                    return;
                 }
                 mDialog.setMessage("Processing...");
 

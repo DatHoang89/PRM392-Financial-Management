@@ -43,11 +43,23 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:hint="Password"
+                android:inputType="textPassword"
                 android:textColor="@android:color/white"
                 android:textColorHint="@android:color/white"
                 android:background="@drawable/edittext_background"
                 android:padding="15dp"
                 android:id="@+id/password_reg"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="ConfirmPassword"
+                android:inputType="textPassword"
+                android:textColor="@android:color/white"
+                android:textColorHint="@android:color/white"
+                android:background="@drawable/edittext_background"
+                android:padding="15dp"
+                android:id="@+id/confirm_password_reg"/>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
