@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -73,6 +75,9 @@ public class DashBoardFragment extends Fragment {
     private TextView totalIncomeResult;
     private TextView totalExpenseResult;
 
+    private Button btnViewInAnalytics;
+    private Button btnViewExAnalytics;
+
     //Recycle View
     private RecyclerView mRecycleIncome;
     private RecyclerView mRecycleExpense;
@@ -135,6 +140,10 @@ public class DashBoardFragment extends Fragment {
         fab_income_btn = myview.findViewById(R.id.income_ft_btn);
         fab_expense_btn = myview.findViewById(R.id.expense_ft_btn);
 
+        //Analytics Fragment
+        btnViewInAnalytics = myview.findViewById(R.id.btnViewInAnalytics);
+        btnViewExAnalytics = myview.findViewById(R.id.btnViewExAnalytics);
+
         //Connect floating text
         fab_income_txt = myview.findViewById(R.id.income_ft_text);
         fab_expense_txt = myview.findViewById(R.id.expense_ft_text);
@@ -151,6 +160,22 @@ public class DashBoardFragment extends Fragment {
         //Connect Animation
         FadeOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_open);
         FadeClose = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_close);
+
+        btnViewInAnalytics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AnalyticsFragment fragment = new AnalyticsFragment(false);
+                setFragment(fragment);
+            }
+        });
+
+        btnViewExAnalytics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AnalyticsFragment fragment = new AnalyticsFragment(true);
+                setFragment(fragment);
+            }
+        });
 
         fab_main_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -563,6 +588,12 @@ public class DashBoardFragment extends Fragment {
             TextView mDate = mIncomeView.findViewById(R.id.date_income_ds);
             mDate.setText(date);
         }
+    }
+
+    private void setFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_frame,fragment);
+        fragmentTransaction.commit();
     }
 
      class ExpenseViewHolder extends RecyclerView.ViewHolder{
