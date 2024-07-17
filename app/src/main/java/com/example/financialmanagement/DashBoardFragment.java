@@ -128,6 +128,8 @@ public class DashBoardFragment extends Fragment {
             mExpenseDatabase.keepSynced(true);
         } else {
             Log.e("Firebase", "User not authenticated");
+            Toast.makeText(getActivity(), "User not authenticated", Toast.LENGTH_SHORT).show();
+            return myview;
         }
 
         //Connect floating button to layout

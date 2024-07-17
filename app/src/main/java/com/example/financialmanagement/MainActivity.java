@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
                     }else{
                         mDialog.dismiss();
                         Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_SHORT).show();
-
                     }
                 }
             });
