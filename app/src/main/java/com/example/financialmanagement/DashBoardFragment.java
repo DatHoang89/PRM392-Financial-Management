@@ -217,7 +217,7 @@ public class DashBoardFragment extends Fragment {
                 int totalsum = 0;
                 for (DataSnapshot mysnap:snapshot.getChildren()){
                     Data data = mysnap.getValue(Data.class);
-                    totalsum += totalsum + data.getAmount();
+                    totalsum += data.getAmount();
                     String strResult = String.valueOf(totalsum);
                     totalIncomeResult.setText(strResult+".00");
                 }
