@@ -155,15 +155,16 @@ public class AnalyticsFragment extends Fragment {
         barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
         barDataSet.setValueTextColor(Color.BLACK);
         barDataSet.setValueTextSize(14f);
+
         XAxis xAxis = barChart.getXAxis();
 
         xAxis.setDrawLabels(true);
         xAxis.setLabelCount(months.size());
-        xAxis.setLabelRotationAngle(45);
+        xAxis.setLabelRotationAngle(-90);
+        xAxis.setCenterAxisLabels(true);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(months));
-        xAxis.setGranularity(1f);
-        xAxis.setGranularityEnabled(true);
-        barChart.setData(new BarData(barDataSet));
+        BarData barData = new BarData(barDataSet);
+        barChart.setData(barData);
         barChart.setFitBars(true);
         barChart.animateY(2000);
     }
