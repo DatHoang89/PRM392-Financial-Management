@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -51,7 +52,6 @@ public class IncomeFragment extends Fragment {
     private int amount;
 
     private String post_key;
-    private String databaseUrl = "https://expense-manager-6ccad-default-rtdb.asia-southeast1.firebasedatabase.app";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,12 @@ public class IncomeFragment extends Fragment {
         View myView = inflater.inflate(R.layout.fragment_income, container, false);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
+        if (mUser == null) {
+            Toast.makeText(getActivity(), "User not authenticated", Toast.LENGTH_SHORT).show();
+            return myView;
+        }
         String uid = mUser.getUid();
+        String databaseUrl = "https://expense-manager-6ccad-default-rtdb.asia-southeast1.firebasedatabase.app";
         mIncomeDatabase = FirebaseDatabase.getInstance(databaseUrl).getReference().child("IncomeData").child(uid);
         recyclerView = myView.findViewById(R.id.rvIncome);
         incomeTotalSum = myView.findViewById(R.id.txtIncome);

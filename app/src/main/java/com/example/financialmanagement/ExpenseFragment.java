@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.financialmanagement.Models.Data;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -67,6 +68,10 @@ public class ExpenseFragment extends Fragment {
         View myView = inflater.inflate(R.layout.fragment_expense, container, false);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
+        if (mUser == null) {
+            Toast.makeText(getActivity(), "User not authenticated", Toast.LENGTH_SHORT).show();
+            return myView;
+        }
         String uid = mUser.getUid();
         mExpenseDatabase = FirebaseDatabase.getInstance(databaseUrl).getReference().child("ExpenseData").child(uid);
         recyclerView = myView.findViewById(R.id.rvExpense);
