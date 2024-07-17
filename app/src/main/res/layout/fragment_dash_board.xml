@@ -107,25 +107,45 @@
                 android:orientation="vertical"
                 android:layout_marginTop="10dp"
                 android:layout_height="wrap_content">
-
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Income:"
-                    android:textAppearance="?android:textAppearanceLarge"
-                    android:padding="10dp"/>
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Income:"
+                        android:textAppearance="?android:textAppearanceLarge"
+                        android:padding="10dp"/>
+
+                    <Button
+                        android:id="@+id/btnViewInAnalytics"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View Income Analytics" />
+                </LinearLayout>
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:id="@+id/recycle_income"
                     android:layout_height="200dp">
                 </androidx.recyclerview.widget.RecyclerView>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Expense:"
-                    android:textAppearance="?android:textAppearanceLarge"
-                    android:padding="10dp"/>
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Expense:"
+                        android:textAppearance="?android:textAppearanceLarge"
+                        android:padding="10dp"/>
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:id="@+id/btnViewExAnalytics"
+                        android:text="View Expense Analytics"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:id="@+id/recycle_expense"
